@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Room Controller</title>
+        <link rel='stylesheet' href='styles.css'></lik>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body>
+        <div class='container-main'>
+            <div class='container-ip'>
+                <div class='container-ip-info'>
+                    <span class='ip-device-name' id='ip-device-name-span'>DEVICE NAME</span>
+                    <span class='ip-device-adress' id='ip-device-adress-span'>IP ADRESS</span>
+                </div>
+                <div class='ip-status status-on'></div>
+            </div>
+            <form class='container-controls'>
+                <div class='container-toggle'>
+                    <input type='radio' name='radio-toggle' id='radio-on' class='radio-toggle radio-toggle-ff' value='on'/>
+                    <label for='radio-on' class ='radio-label radio-label-on'>ON</label>
+                    <input type='radio' name='radio-toggle' id='radio-off' class='radio-toggle radio-toggle-off' value='off'/>
+                    <label for='radio-off' class ='radio-label radio-label-off'>OFF</label>
+                    <div class='toggle-indicator'></div>
+                </div>
+
+                <div class='container-mode'>
+                    <div>
+
+                    </div>
+                </div>
+
+
+
+                <div class='container-customization'>
+
+                </div>
+
+                
+            </form>
+
+            <input type='radio' name='radio-power-button' id='radio-power-button' class='radio-power-button'>
+            <label for='radio-power-button' class='radio-power-button-label'>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                    <path d="M7.5 1v7h1V1h-1z"/>
+                    <path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"/>
+                  </svg>
+            </label>
+        </div>
+    </body>
+</html>

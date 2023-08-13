@@ -1,0 +1,170 @@
+body {
+    display: flex;
+
+    margin: 0;
+    padding: 0;
+
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    
+    background: #121212;
+}
+
+.container-main {
+    width: 100%;
+}
+
+.container-ip {
+    width: 70%;
+    height: 4em;
+    border-radius: 2em;
+
+    background: #212121;
+    margin: 75px auto 75px auto;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.container-ip-info {
+    width: 90%;
+    height: 100%;
+
+    padding-left: 2em;
+
+    display: flex;
+    flex-direction: column;
+    align-items:start;    
+    justify-content: center;
+}
+
+.ip-status {
+    width: 1.5em;
+    height: 1.5rem;
+    border-radius: 50%;
+
+
+    margin: auto 1.5em;
+
+}
+
+.status-on {
+    background-color: greenyellow;
+}
+
+.status-off {
+    background-color: red;
+}
+
+.ip-device-name {
+    font-size: 1.5em;
+    color: #FFF;
+}
+
+.ip-device-adress {
+    font-size: 1em;
+    color: #565656;
+}
+
+.container-controls {
+    width: 70%;
+    height: 400px;
+
+    display: flex;
+
+    margin: 0 auto;
+}
+
+.container-toggle {
+    width: 5rem;
+    height: 15rem;
+    border-radius: 2.5rem;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 0px;
+    border: none;
+
+    color: #FFF;
+    background-color: #212121;
+}
+
+.radio-toggle {
+    display: none;
+}
+
+.radio-label {
+    width: 100%;
+    height: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.radio-label-on {
+
+}
+
+.radio-label-off {
+
+}
+
+.toggle-indicator {
+    width: 100%;
+    height: 50%;
+    border-radius: 2.5rem;
+
+    position: absolute;
+
+    background-color: rgba(75, 75, 75, 0.5);
+    transform: translateY(100%);
+
+    transition: all 1s;
+}
+
+input#radio-on:checked ~ .toggle-indicator {
+    background-color: rgba(100, 150, 100, 0.5);
+    transform: translateY(0%);
+}
+
+input#radio-off:checked ~ .toggle-indicator {
+    background-color: rgba(75, 75, 75, 0.5);
+    transform: translateY(100%);
+}
+
+.container-mode {
+    width: calc(80% - 1.5em);
+    height: 5em;
+    border-radius:2.5em;
+
+    margin-left: 3em;
+
+    background-color: #212121;
+}
+
+.radio-power-button {
+    display: none;
+}
+
+.radio-power-button-label {
+    width: 5rem;
+    height: 100px;
+    border-radius: 50%;
+
+    background-color: #212121;
+}
+
+.radio-power-button-label svg {
+    width: 3em;
+    height: 3em;
+
+    fill: #FFF;
+
+    margin: 1rem;
+
+    filter: drop-shadow(0 0 5px gray);
+}
