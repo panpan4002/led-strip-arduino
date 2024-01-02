@@ -8,10 +8,11 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "C:/Users/alepb/Desktop/Projetos/Arduino/231211-062624-uno/include",
-                "C:/Users/alepb/Desktop/Projetos/Arduino/231211-062624-uno/src",
+                "C:/Users/alepb/Desktop/Projetos/Arduino/room-led-strip/include",
+                "C:/Users/alepb/Desktop/Projetos/Arduino/room-led-strip/src",
                 "C:/Users/alepb/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/alepb/.platformio/packages/framework-arduino-avr/variants/standard",
+                "C:/Users/alepb/Desktop/Projetos/Arduino/room-led-strip/.pio/libdeps/uno/Unity/src",
                 "C:/Users/alepb/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                 "C:/Users/alepb/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                 "C:/Users/alepb/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -22,10 +23,11 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "C:/Users/alepb/Desktop/Projetos/Arduino/231211-062624-uno/include",
-                    "C:/Users/alepb/Desktop/Projetos/Arduino/231211-062624-uno/src",
+                    "C:/Users/alepb/Desktop/Projetos/Arduino/room-led-strip/include",
+                    "C:/Users/alepb/Desktop/Projetos/Arduino/room-led-strip/src",
                     "C:/Users/alepb/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/alepb/.platformio/packages/framework-arduino-avr/variants/standard",
+                    "C:/Users/alepb/Desktop/Projetos/Arduino/room-led-strip/.pio/libdeps/uno/Unity/src",
                     "C:/Users/alepb/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
                     "C:/Users/alepb/.platformio/packages/framework-arduino-avr/libraries/HID/src",
                     "C:/Users/alepb/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
