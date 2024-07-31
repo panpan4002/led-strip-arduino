@@ -1,8 +1,9 @@
 #include <Arduino.h>
-const int redPotenciometer = A0;
-const int greenPotenciometer = A1;
-const int bluePotenciometer = A2;   
-const int brightnessPotenciometer = A3;
+
+const int redPotenciometer = A5;
+const int greenPotenciometer = A2;
+const int bluePotenciometer = A1;   
+const int brightnessPotenciometer = A0;
 
 const int buttonPin = 2;
 //bananaaaaaaaaaaa
@@ -10,16 +11,91 @@ const int redPin = 5;
 const int greenPin = 6;
 const int bluePin = 3;
 
+//controle do botão
+
 int buttonState = 0;
+int lastButtonState = 0;
 unsigned long buttonPressTime = 0;
-int lastButtonState = 1;
+bool pressedFor2Seconds = false;
+bool buttonAction = false;
 
-bool power = false;
-int state = 0;
+bool toggleReading = false;
+bool readingSpeed = false;
 
-int ledSpeed = 1000;
-int ledColorState = 0;
+//controladores gerais
+
+int ledState = 0;
+
+int redValue = 0;
+int greenValue = 0;
+int blueValue = 0;
+float brightnessValue = 0;
+int ledDelayValue = 0;
+
+int hueValue = 0;
+
+// pisca pisca
+float blinkTime = 0;
+int ledBlinkState = 0;
+int r = 0;
+int g = 0;
+int b = 0;
+
+
+// fade
+
+int redFadeValue = 0;
+int greenFadeValue = 0;
+int blueFadeValue = 0;
 unsigned long previousMillis = 0;
+
+float myFabs(float x) {
+    return (x < 0) ? -x : x;
+}
+
+// Função para converter HSB para RGB
+void HSBtoRGB(float hue, float sat, float bright, int& r, int& g, int& b) {
+    float c = bright * sat; // Chroma
+    float x = c * (1 - myFabs(fmod(hue / 60.0, 2) - 1));
+    float m = bright - c;
+
+    float r_prime, g_prime, b_prime;
+
+    if (0 <= hue && hue < 60) {
+        r_prime = c;
+        g_prime = x;
+        b_prime = 0;
+    } else if (60 <= hue && hue < 120) {
+        r_prime = x;
+        g_prime = c;
+        b_prime = 0;
+    } else if (120 <= hue && hue < 180) {
+        r_prime = 0;
+        g_prime = c;
+        b_prime = x;
+    } else if (180 <= hue && hue < 240) {
+        r_prime = 0;
+        g_prime = x;
+        b_prime = c;
+    } else if (240 <= hue && hue < 300) {
+        r_prime = x;
+        g_prime = 0;
+        b_prime = c;
+    } else if (300 <= hue && hue < 360) {
+        r_prime = c;
+        g_prime = 0;
+        b_prime = x;
+    } else {
+        r_prime = 0;
+        g_prime = 0;
+        b_prime = 0;
+    }
+
+    r = static_cast<int>((r_prime + m) * 255);
+    g = static_cast<int>((g_prime + m) * 255);
+    b = static_cast<int>((b_prime + m) * 255);
+}
+
 
 void setup()
 {
@@ -39,134 +115,157 @@ void setup()
 
 
 
-void LedStatic(float r, float g, float b, float brightness)
+void LedStatic(int r, int g, int b, float brightness)
 {
-  brightness = brightness / 100;
   analogWrite(redPin, r * brightness);
   analogWrite(greenPin, g * brightness);
   analogWrite(bluePin, b * brightness);
 }
 
-
-void LedWhite(int brightness)
+void LedBoringBlink(float brightness, int delay) 
 {
-  analogWrite(redPin, 1 * brightness);
-  analogWrite(greenPin, 1 * brightness);
-  analogWrite(bluePin, 1 * brightness);
+
+  switch (ledBlinkState)
+  {
+  case 0:
+    LedStatic(255, 0, 0, brightness);
+    break;
+  
+  case 1:
+    LedStatic(0, 255, 0, brightness);
+    break;
+
+  case 2: 
+    LedStatic(0, 0, 255, brightness);
+    break;
+
+  default:
+    break;
+  }
+
+
+
+  if (millis() - blinkTime >= delay)
+  {
+    ledBlinkState ++;
+    if (ledBlinkState > 2) ledBlinkState = 0;
+    blinkTime = millis();
+  }
+
 }
 
-void LedBlink(int brightness, int speed) {
-  unsigned long currentMillis = millis(); // Pega o tempo atual
+void LedRealBlink(float brightness, int delay)
+{
+  if (millis() - blinkTime >= delay)
+  {
+    blinkTime = millis();
 
-  if (currentMillis - previousMillis >= speed) { // Verifica se já passou o tempo de 'speed'
-    previousMillis = currentMillis; // Atualiza a última vez que o LED foi atualizado
+    int hueValue = random(0, 360);
+    int saturationValue = 1;
+    int brightnessValue = 1;
 
-    ledColorState++;
-    if (ledColorState >= 2) {
-      ledColorState = 0;
-    }
+    HSBtoRGB(hueValue, saturationValue, brightnessValue, r, g, b);
   }
 
-    // Alterna entre os diferentes estados do LED
-    switch (ledColorState) {
-      case 0:
-        LedStatic(255, 0, 0, brightness);
-        state = 1;
-        break;
-      case 1:
-        LedStatic(0, 255, 0, brightness);
-        state = 2;
-        break;
-      case 2:
-        LedStatic(0, 0, 255, brightness);
-        state = 0;
-        break;
-    }
-  }
+  //random hue 0 and 360
+
+
+  LedStatic(r, g, b, brightness);
+}
+
+
+int map(int x, int in_min, int in_max, int out_min, int out_max) 
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+float mapValueToFloat(int x, int in_min, int in_max) {
+    return static_cast<float>(x - in_min) / (in_max - in_min);
+}
+
+void Read()
+{
+  redValue = analogRead(redPotenciometer);
+  //blueValue = analogRead(bluePotenciometer);
+  //greenValue = analogRead(greenPotenciometer);
+
+  buttonState = digitalRead(buttonPin);
+}
 
 void loop()
 {
-  //LedStatic(139, 0, 139, 50);
-  float red = analogRead(redPotenciometer);
-  red = map(red, 0, 1023, 0, 255);
 
-  float blue = analogRead(bluePotenciometer);
-  blue = map(blue, 0, 1023, 0, 255);
-
-  float green = analogRead(greenPotenciometer);
-  green = map(green, 0, 1023, 0, 255);
-
-  float brightness = analogRead(brightnessPotenciometer);
-  brightness = map(brightness, 0, 1023, 0, 100);
-
-  buttonState = digitalRead(buttonPin);
-
-  /*Serial.print(red);
-  Serial.print(" ");
-  Serial.print(blue);
-  Serial.print(" ");
-  Serial.print(green);
-  Serial.print(" ");
-  Serial.print(brightness);
-  Serial.print(" ");
-  Serial.println(buttonState);
-  */
-
-
-  //analogWrite(RED, 255);
+  Read();
 
   if (buttonState == 0) {
-    // Se o botão acabou de ser pressionado, armazene o tempo atual
-    if (buttonPressTime == 0 && lastButtonState == 1 && state != 0) {
-      buttonPressTime = millis();
-      state ++;
 
-      Serial.println("aperto");
-    }
-    // Se o botão foi pressionado por 2 segundos, execute uma ação
-    else if (millis() - buttonPressTime >= 2000) {
+      buttonAction = false;
 
-      if (state == 0) {
-        state = 1;
-        }
+      if (lastButtonState == 1) buttonPressTime = millis();
 
-      else state = 0;
-      buttonPressTime = 0;
-    }
+      if (millis() - buttonPressTime >= 2000 && !pressedFor2Seconds) // liga/desliga se pressionado por 2 segundos.
+      {
+        
+        buttonAction = true;
+        pressedFor2Seconds = true;
+
+        if (ledState == 0) ledState = 1;
+        else ledState = 0;
+      }
+
+      if (millis() - buttonPressTime >= 500 && !toggleReading) // muda para velocidade se pressionado por 2 segundos.
+      {
+        buttonAction = true;
+        toggleReading = true;
+        readingSpeed = !readingSpeed;
+      }
+
+      if(lastButtonState == 1 && ledState != 0) // muda o estado do led se pressionado uma vez.
+      {
+        buttonAction = true;
+        ledState ++;
+        if (ledState > 4) ledState = 1;
+      }
   }
-  // Se o botão não está pressionado, reset o tempo de pressionamento do botão
-  else {
+
+  else 
+
+  {
+    buttonAction = false;
+    toggleReading = false;
     buttonPressTime = 0;
-  }
-
-  if (state > 4) {
-    state = 1;
+    pressedFor2Seconds = false;
   }
 
   lastButtonState = buttonState;
 
-  Serial.println(state);
+  Serial.println(redValue);
 
-  switch (state)
-    {
+  //USANDO VERMELHO PQ TODOS OS POTENCIOMETROS QUEIMARÃO
+
+  float tempValue = mapValueToFloat(redValue, 0, 1023);
+  Serial.println(tempValue);
+  
+  switch (ledState)
+  {
     case 0:
-      LedStatic(0, 0, 0, 0);
+      LedStatic(0, 0, 0, tempValue);
       break;
     
     case 1:
-      LedWhite(brightness);
+      LedStatic(255, 255, 255, tempValue);
       break;
 
     case 2:
-      LedStatic(red, green, blue, brightness);
+      LedStatic(255, 75, 0, tempValue);
       break;
 
     case 3:
-      LedBlink(brightness, ledSpeed);
+      LedBoringBlink(tempValue, 300);
       break;
-
-    default:
+    
+    case 4:
+      LedRealBlink(tempValue, 75);
       break;
-    }  
-
+  }
 }

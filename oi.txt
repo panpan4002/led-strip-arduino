@@ -1,0 +1,3 @@
+- só analogo vermelho lê
+
+-alternar modo ao clicar, brilho pelo vermelho (SOLUCAO TEMPORARIA)
